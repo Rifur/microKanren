@@ -1,4 +1,4 @@
-from collections import Sequence
+from collections.abc import Sequence
 import copy
 
 
@@ -23,11 +23,13 @@ def stream_append(x, y, subst):
 
 
 def stream_map(constraint, s):
-    subst = next(s)
-    yield from stream_append(constraint(subst),
-                             stream_map(constraint, s),
-                             subst)
-
+    try:
+        subst = next(s)
+        yield from stream_append(constraint(subst), \
+            stream_map(constraint, s), \
+            subst)
+    except StopIteration:
+        return
 
 def id_eq(x, y):
     return id(x) == id(y)
